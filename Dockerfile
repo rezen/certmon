@@ -1,6 +1,12 @@
 FROM golang:1.14.2-buster
-RUN mkdir -p $GOPATH/rezen/monitor-certs
-COPY main.go $GOPATH/rezen/monitor-certs/main.go
-RUN cd $GOPATH/rezen/monitor-certs/ && go get -d -v .
-WORKDIR $GOPATH/rezen/monitor-certs
-CMD go run main.go
+RUN mkdir -p /go/src/github.com/rezen/certmon/cmd/certmon
+WORKDIR /go/src/github.com/rezen/certmon
+
+COPY *.go ./
+
+RUN go get -d -v .
+COPY ./cmd/certmon/*.go ./cmd/certmon
+RUN go get -d -v ./cmd/certmon
+
+RUN go install github.com/rezen/certmon/cmd/certmon
+CMD go run cmd/certmon/main.go

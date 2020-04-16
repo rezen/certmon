@@ -14,9 +14,11 @@ services:
       - redis
     build:
       context: .
+    ports:
+     - "9000:9000"
     environment:
       REDIS_HOST: redis
       NOTIFY_LOG: matches.json
     volumes:
-      - $PWD:/go/rezen/monitor-certs
+      - $PWD:/go/src/github.com/rezen/certmon
   
