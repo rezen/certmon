@@ -1,10 +1,13 @@
 package certmon
 
 import (
-	"os"
 	"github.com/go-redis/redis"
-
+	"github.com/json-iterator/go"
+	"os"
 )
+
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
 func CreateRedisClient() *redis.Client {
 	redisHost := os.Getenv("REDIS_HOST")
 	redisPort := os.Getenv("REDIS_PORT")

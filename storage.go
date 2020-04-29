@@ -1,15 +1,12 @@
 package certmon
 
 import (
-	"time"
 	"github.com/boltdb/bolt"
 	"github.com/go-redis/redis"
 	tld "github.com/jpillora/go-tld"
 	"github.com/labstack/echo"
-
+	"time"
 )
-
-
 
 type RedisStorage struct {
 	Client  *redis.Client
@@ -18,6 +15,23 @@ type RedisStorage struct {
 
 func (r *RedisStorage) Monitor(domain string) error {
 	r.Client.HSet("watch_domains", domain, "1")
+	return nil
+}
+
+func (r *RedisStorage) Domains() []string {
+	domains, err := r.Client.HKeys("watch_domains").Result()
+	if err != nil {
+		return []string{}
+	}
+	return domains
+}
+
+func (r *RedisStorage) Matches(domain string) []Entry {
+	return []Entry{}
+}
+
+func (r *RedisStorage) Remove(domain string) error {
+	r.Client.HDel("watch_domains", domain).Result()
 	return nil
 }
 
@@ -59,13 +73,17 @@ type Store interface {
 
 func (s *BoltStorage) Domains() []string {
 	domains := []string{}
-	tx, err := s.DB.Begin(false)
+	tx, err := s.DB.Begin(true)
 	if err != nil {
 		return domains
 	}
 	defer tx.Rollback()
-	bucket := tx.Bucket([]byte(s.BucketName))
+	bucket, err := tx.CreateBucketIfNotExists([]byte(s.BucketName))
 
+	if err != nil {
+		return domains
+	}
+	
 	bucket.ForEach(func(k, v []byte) error {
 		domains = append(domains, string(k))
 		return nil
@@ -146,14 +164,17 @@ func (s *BoltStorage) IsMonitored(entry *Entry) (bool, error) {
 		return false, err
 	}
 	entry.Domain = u.Domain + "." + u.TLD
-	tx, err := s.DB.Begin(false)
+	tx, err := s.DB.Begin(true)
 	if err != nil {
 		s.Counter.Increment("bolt_errors")
 		return false, err
 	}
 	defer tx.Rollback()
-	bucket := tx.Bucket([]byte(s.BucketName))
+	bucket, err := tx.CreateBucketIfNotExists([]byte(s.BucketName))
+
+	if err != nil {
+		panic(err)
+	}
 	v := bucket.Get([]byte(entry.Domain))
 	return string(v) == "1", err
 }
-

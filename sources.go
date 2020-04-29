@@ -1,18 +1,18 @@
 package certmon
 
 import (
-	"time"
+	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
-		"github.com/gorilla/websocket"
+	"time"
 )
 
-func CertStreamEventStream() (chan Entry, chan error) {
+func CertStreamEventStream(config Config) (chan Entry, chan error) {
 	entries := make(chan Entry)
 	errs := make(chan error)
 
 	go func() {
 		for {
-			c, _, err := websocket.DefaultDialer.Dial("wss://certstream.calidog.io", nil)
+			c, _, err := websocket.DefaultDialer.Dial(config.Stream, nil)
 
 			if err != nil {
 				errs <- errors.Wrap(err, "Error connecting to certstream! Sleeping a few seconds and reconnecting... ")
@@ -43,4 +43,3 @@ func CertStreamEventStream() (chan Entry, chan error) {
 
 	return entries, errs
 }
-

@@ -17,6 +17,7 @@ services:
     ports:
      - "9000:9000"
     environment:
+      LOGLEVEL: "debug"
       REDIS_HOST: redis
       NOTIFY_LOG: matches.json
     volumes:

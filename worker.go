@@ -1,14 +1,12 @@
 package certmon
 
 import (
-	"time"
 	"github.com/labstack/echo"
-
+	"time"
 )
 
-
-func Worker(storage Store, count *Counter, l echo.Logger) {
-	stream, errs := CertStreamEventStream()
+func Worker(config Config, storage Store, count *Counter, l echo.Logger) {
+	stream, errs := CertStreamEventStream(config)
 	ticker := time.NewTicker(60 * time.Second)
 	quit := make(chan struct{})
 
