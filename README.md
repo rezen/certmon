@@ -1,3 +1,3 @@
-# monitor-certs
+# certmon
 
 `docker-compose up`
