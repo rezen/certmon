@@ -19,13 +19,13 @@ type EntryData struct {
 }
 
 type LeafCert struct {
-	AllDomains []string               `json:"all_domains"`
-	Subject    Subject                `json:"subject"`
+	AllDomains []string   `json:"all_domains"`
+	Subject    Subject    `json:"subject"`
 	Extensions Extensions `json:"extensions"`
 	// Extensions map[string]interface{} `json:"extensions"`
 
-	NotBefore  int                    `json:"not_before"`
-	NotAfter   int                    `json:"not_after"`
+	NotBefore int `json:"not_before"`
+	NotAfter  int `json:"not_after"`
 }
 
 type Extensions struct {
@@ -52,8 +52,8 @@ func CreateCounter() *Counter {
 }
 
 type Subject struct {
-	C          string `json:"c"`
-	CN         string `json:"cn"`
-	O         string `json:"o"`
-	OU         string `json:"ou"`
+	C  string `json:"c"`
+	CN string `json:"cn"`
+	O  string `json:"o"`
+	OU string `json:"ou"`
 }

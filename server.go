@@ -88,35 +88,6 @@ func Serve() {
 		})
 		return c.JSON(http.StatusOK, matches)
 	})
-	/*
-	e.GET("/extensions", func(c echo.Context) error {
-		keys := map[string]bool{}
-		db.View(func(tx *bolt.Tx) error {
-			bucket := tx.Bucket([]byte("matches"))
-			if bucket == nil {
-				return nil
-			}
-			bucket.ForEach(func(k, v []byte) error {
-				// @todo check if k contains match_
-				b := bucket.Bucket(k)
-				b.ForEach(func(k, v []byte) error {
-					var entry Entry
-					if err := json.Unmarshal(v, &entry); err != nil {
-						e.Logger.Error(err)
-					} else {
-						for k, _ := range entry.Data.LeafCert.Extensions {
-							keys[k] = true
-						}
-					}
-					return nil
-				})
-				return nil
-			})
-			return nil
-		})
-		return c.JSON(http.StatusOK, keys)
-	})*/
-
 
 	e.POST("/domain", func(c echo.Context) error {
 		var data map[string]interface{}

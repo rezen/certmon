@@ -83,7 +83,7 @@ func (s *BoltStorage) Domains() []string {
 	if err != nil {
 		return domains
 	}
-	
+
 	bucket.ForEach(func(k, v []byte) error {
 		domains = append(domains, string(k))
 		return nil
